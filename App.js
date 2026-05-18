@@ -10,11 +10,23 @@ import {
   View,
 } from 'react-native';
 
-const sortingPhrases = [
-  'Hmm... difficult. Very difficult. Better be... GRYFFINDOR!',
-  'Slytherin will help you on the way to greatness.',
-  'You might belong in Hufflepuff, where they are just and loyal.',
-  'Or perhaps in wise old Ravenclaw, if you have a ready mind.',
+const sortingAudioFiles = [
+  {
+    uri: './assets/audio/gryffindor.mp3',
+    fallbackText: 'Hmm... difficult. Very difficult. Better be... GRYFFINDOR!',
+  },
+  {
+    uri: './assets/audio/slytherin.mp3',
+    fallbackText: 'Slytherin will help you on the way to greatness.',
+  },
+  {
+    uri: './assets/audio/hufflepuff.mp3',
+    fallbackText: 'You might belong in Hufflepuff, where they are just and loyal.',
+  },
+  {
+    uri: './assets/audio/ravenclaw.mp3',
+    fallbackText: 'Or perhaps in wise old Ravenclaw, if you have a ready mind.',
+  },
 ];
 
 export default function App() {
@@ -30,8 +42,30 @@ export default function App() {
     [rotation]
   );
 
+  const playAudioClip = async (audioClip) => {
+    try {
+      const { Audio } = require('expo-av');
+      const { sound } = await Audio.Sound.createAsync({ uri: audioClip.uri });
+      await sound.playAsync();
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          sound.unloadAsync();
+        }
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   const onSortPress = () => {
+    const audioClip = sortingAudioFiles[Math.floor(Math.random() * sortingAudioFiles.length)];
     AccessibilityInfo.announceForAccessibility('The Sorting Hat is deciding...');
+    playAudioClip(audioClip).then((played) => {
+      if (!played) {
+        AccessibilityInfo.announceForAccessibility(audioClip.fallbackText);
+      }
+    });
 
     Animated.sequence([
       Animated.parallel([
@@ -68,10 +102,7 @@ export default function App() {
         easing: Easing.inOut(Easing.ease),
         useNativeDriver: true,
       }),
-    ]).start(() => {
-      const phrase = sortingPhrases[Math.floor(Math.random() * sortingPhrases.length)];
-      AccessibilityInfo.announceForAccessibility(phrase);
-    });
+    ]).start();
   };
 
   return (
