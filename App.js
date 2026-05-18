@@ -63,7 +63,7 @@ export default function App() {
       };
       const { sound } = await ExpoAudio.Sound.createAsync(
         { uri: audioClip.uri },
-        {},
+        { shouldPlay: false },
         onPlaybackStatusUpdate
       );
       soundInstance = sound;
@@ -120,6 +120,8 @@ export default function App() {
         if (!played) {
           AccessibilityInfo.announceForAccessibility(audioClip.fallbackText);
         }
+      }).catch((error) => {
+        console.warn('Audio playback promise failed:', error);
       });
     });
   };
