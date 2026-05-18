@@ -55,16 +55,22 @@ export default function App() {
         return false;
       }
 
-      const { sound } = await ExpoAudio.Sound.createAsync({ uri: audioClip.uri });
-      sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          sound.unloadAsync();
+      let soundInstance = null;
+      const onPlaybackStatusUpdate = (status) => {
+        if (status.didJustFinish && soundInstance) {
+          soundInstance.unloadAsync();
         }
-      });
+      };
+      const { sound } = await ExpoAudio.Sound.createAsync(
+        { uri: audioClip.uri },
+        {},
+        onPlaybackStatusUpdate
+      );
+      soundInstance = sound;
       await sound.playAsync();
       return true;
     } catch (error) {
-      console.warn('Audio playback failed:', error);
+      console.warn(`Audio playback failed for ${audioClip.uri}:`, error);
       return false;
     }
   };
