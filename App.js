@@ -76,7 +76,12 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable accessibilityRole="button" onPress={onSortPress} style={styles.button}>
+      <Pressable
+        accessibilityLabel="Sort me into a Hogwarts house"
+        accessibilityRole="button"
+        onPress={onSortPress}
+        style={styles.button}
+      >
         <Animated.View style={{ transform: [{ rotate: spin }, { scale }] }}>
           <Text style={styles.hat}>🎩</Text>
         </Animated.View>
