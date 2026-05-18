@@ -10,21 +10,28 @@ import {
   View,
 } from 'react-native';
 
+let ExpoAudio = null;
+try {
+  ExpoAudio = require('expo-av').Audio;
+} catch (error) {
+  ExpoAudio = null;
+}
+
 const sortingAudioFiles = [
   {
-    uri: './assets/audio/gryffindor.mp3',
+    uri: 'asset:/audio/gryffindor.mp3',
     fallbackText: 'Hmm... difficult. Very difficult. Better be... GRYFFINDOR!',
   },
   {
-    uri: './assets/audio/slytherin.mp3',
+    uri: 'asset:/audio/slytherin.mp3',
     fallbackText: 'Slytherin will help you on the way to greatness.',
   },
   {
-    uri: './assets/audio/hufflepuff.mp3',
+    uri: 'asset:/audio/hufflepuff.mp3',
     fallbackText: 'You might belong in Hufflepuff, where they are just and loyal.',
   },
   {
-    uri: './assets/audio/ravenclaw.mp3',
+    uri: 'asset:/audio/ravenclaw.mp3',
     fallbackText: 'Or perhaps in wise old Ravenclaw, if you have a ready mind.',
   },
 ];
@@ -44,8 +51,11 @@ export default function App() {
 
   const playAudioClip = async (audioClip) => {
     try {
-      const { Audio } = require('expo-av');
-      const { sound } = await Audio.Sound.createAsync({ uri: audioClip.uri });
+      if (!ExpoAudio) {
+        return false;
+      }
+
+      const { sound } = await ExpoAudio.Sound.createAsync({ uri: audioClip.uri });
       await sound.playAsync();
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.didJustFinish) {
@@ -53,7 +63,8 @@ export default function App() {
         }
       });
       return true;
-    } catch {
+    } catch (error) {
+      console.warn('Audio playback failed:', error);
       return false;
     }
   };
