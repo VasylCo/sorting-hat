@@ -24,14 +24,13 @@ export default function App() {
   const spin = useMemo(
     () =>
       rotation.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['0deg', '20deg'],
+        inputRange: [-1, 0, 1],
+        outputRange: ['-20deg', '0deg', '20deg'],
       }),
     [rotation]
   );
 
   const onSortPress = () => {
-    const phrase = sortingPhrases[Math.floor(Math.random() * sortingPhrases.length)];
     AccessibilityInfo.announceForAccessibility('The Sorting Hat is deciding...');
 
     Animated.sequence([
@@ -70,6 +69,7 @@ export default function App() {
         useNativeDriver: true,
       }),
     ]).start(() => {
+      const phrase = sortingPhrases[Math.floor(Math.random() * sortingPhrases.length)];
       AccessibilityInfo.announceForAccessibility(phrase);
     });
   };
