@@ -32,6 +32,7 @@ export default function App() {
 
   const onSortPress = () => {
     const phrase = sortingPhrases[Math.floor(Math.random() * sortingPhrases.length)];
+    AccessibilityInfo.announceForAccessibility('The Sorting Hat is deciding...');
 
     Animated.sequence([
       Animated.parallel([
