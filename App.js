@@ -120,8 +120,6 @@ export default function App() {
         if (!played) {
           AccessibilityInfo.announceForAccessibility(audioClip.fallbackText);
         }
-      }).catch((error) => {
-        console.warn('Audio playback promise failed:', error);
       });
     });
   };
