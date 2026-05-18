@@ -19,19 +19,19 @@ try {
 
 const sortingAudioFiles = [
   {
-    uri: 'asset:/audio/gryffindor.mp3',
+    uri: 'https://example.com/audio/gryffindor.mp3',
     fallbackText: 'Hmm... difficult. Very difficult. Better be... GRYFFINDOR!',
   },
   {
-    uri: 'asset:/audio/slytherin.mp3',
+    uri: 'https://example.com/audio/slytherin.mp3',
     fallbackText: 'Slytherin will help you on the way to greatness.',
   },
   {
-    uri: 'asset:/audio/hufflepuff.mp3',
+    uri: 'https://example.com/audio/hufflepuff.mp3',
     fallbackText: 'You might belong in Hufflepuff, where they are just and loyal.',
   },
   {
-    uri: 'asset:/audio/ravenclaw.mp3',
+    uri: 'https://example.com/audio/ravenclaw.mp3',
     fallbackText: 'Or perhaps in wise old Ravenclaw, if you have a ready mind.',
   },
 ];
@@ -56,12 +56,12 @@ export default function App() {
       }
 
       const { sound } = await ExpoAudio.Sound.createAsync({ uri: audioClip.uri });
-      await sound.playAsync();
       sound.setOnPlaybackStatusUpdate((status) => {
         if (status.didJustFinish) {
           sound.unloadAsync();
         }
       });
+      await sound.playAsync();
       return true;
     } catch (error) {
       console.warn('Audio playback failed:', error);
@@ -72,11 +72,7 @@ export default function App() {
   const onSortPress = () => {
     const audioClip = sortingAudioFiles[Math.floor(Math.random() * sortingAudioFiles.length)];
     AccessibilityInfo.announceForAccessibility('The Sorting Hat is deciding...');
-    playAudioClip(audioClip).then((played) => {
-      if (!played) {
-        AccessibilityInfo.announceForAccessibility(audioClip.fallbackText);
-      }
-    });
+    const audioPlaybackPromise = playAudioClip(audioClip);
 
     Animated.sequence([
       Animated.parallel([
@@ -113,7 +109,13 @@ export default function App() {
         easing: Easing.inOut(Easing.ease),
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(() => {
+      audioPlaybackPromise.then((played) => {
+        if (!played) {
+          AccessibilityInfo.announceForAccessibility(audioClip.fallbackText);
+        }
+      });
+    });
   };
 
   return (
