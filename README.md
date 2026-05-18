@@ -1,2 +1,8 @@
 # sorting-hat
-Simple react-natice application to be sorted by hat from Harry Potter series
+
+Simple React Native application inspired by the Sorting Hat from Harry Potter.
+
+- One button with a Sorting Hat view
+- On press, the hat animates
+- A random sorting audio clip is played
+- Audio clip placeholders currently point to valid `https://.../*.mp3` URLs
