@@ -36,7 +36,39 @@ const sortingAudioFiles = [
     "Hmm... difficult. Very difficult. Better be... GRYFFINDOR!",
   ),
   safeAudio(
+    () => require("./assets/audio/gryffindor-2.mp3"),
+    "Hmm... difficult. Very difficult. Better be... GRYFFINDOR!",
+  ),
+  safeAudio(
+    () => require("./assets/audio/gryffindor-3.mp3"),
+    "Hmm... difficult. Very difficult. Better be... GRYFFINDOR!",
+  ),
+  safeAudio(
+    () => require("./assets/audio/gryffindor-4.mp3"),
+    "Hmm... difficult. Very difficult. Better be... GRYFFINDOR!",
+  ),
+  safeAudio(
+    () => require("./assets/audio/gryffindor-5.mp3"),
+    "Hmm... difficult. Very difficult. Better be... GRYFFINDOR!",
+  ),
+  safeAudio(
     () => require("./assets/audio/slytherin-1.mp3"),
+    "Slytherin will help you on the way to greatness.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/slytherin-2.mp3"),
+    "Slytherin will help you on the way to greatness.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/slytherin-3.mp3"),
+    "Slytherin will help you on the way to greatness.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/slytherin-4.mp3"),
+    "Slytherin will help you on the way to greatness.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/slytherin-5.mp3"),
     "Slytherin will help you on the way to greatness.",
   ),
   safeAudio(
@@ -44,7 +76,39 @@ const sortingAudioFiles = [
     "You might belong in Hufflepuff, where they are just and loyal.",
   ),
   safeAudio(
+    () => require("./assets/audio/hufflepuff-2.mp3"),
+    "You might belong in Hufflepuff, where they are just and loyal.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/hufflepuff-3.mp3"),
+    "You might belong in Hufflepuff, where they are just and loyal.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/hufflepuff-4.mp3"),
+    "You might belong in Hufflepuff, where they are just and loyal.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/hufflepuff-5.mp3"),
+    "You might belong in Hufflepuff, where they are just and loyal.",
+  ),
+  safeAudio(
     () => require("./assets/audio/ravenclaw-1.mp3"),
+    "Or perhaps in wise old Ravenclaw, if you have a ready mind.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/ravenclaw-2.mp3"),
+    "Or perhaps in wise old Ravenclaw, if you have a ready mind.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/ravenclaw-3.mp3"),
+    "Or perhaps in wise old Ravenclaw, if you have a ready mind.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/ravenclaw-4.mp3"),
+    "Or perhaps in wise old Ravenclaw, if you have a ready mind.",
+  ),
+  safeAudio(
+    () => require("./assets/audio/ravenclaw-5.mp3"),
     "Or perhaps in wise old Ravenclaw, if you have a ready mind.",
   ),
 ];
