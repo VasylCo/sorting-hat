@@ -16,7 +16,7 @@ import Sound from "react-native-sound";
 Sound.setCategory("Playback");
 
 const HAT_GIF = require("./assets/images/soting-hat.gif");
-const HAT_PNG = require("./assets/images/soting-hat.png");
+const HAT_PNG = require("./assets/images/soting-hat-still.png");
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const IDLE_HAT_SIZE = 140;
