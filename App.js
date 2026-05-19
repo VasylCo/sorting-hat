@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import {
   AccessibilityInfo,
   Animated,
+  Dimensions,
   Easing,
   Image,
   Pressable,
@@ -13,6 +14,13 @@ import {
 import Sound from "react-native-sound";
 
 Sound.setCategory("Playback");
+
+const HAT_GIF = require("./assets/images/soting-hat.gif");
+const HAT_PNG = require("./assets/images/soting-hat.png");
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const IDLE_HAT_SIZE = 140;
+const BIG_HAT_SCALE = (SCREEN_WIDTH * 0.9) / IDLE_HAT_SIZE;
 
 function safeAudio(loader, fallbackText) {
   try {
@@ -45,6 +53,7 @@ export default function App() {
   const rotation = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
   const [result, setResult] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const spin = useMemo(
     () =>
@@ -79,54 +88,59 @@ export default function App() {
   };
 
   const onSortPress = () => {
+    if (isPlaying) return;
+    setIsPlaying(true);
     const audioClip =
       sortingAudioFiles[Math.floor(Math.random() * sortingAudioFiles.length)];
-    AccessibilityInfo.announceForAccessibility(
+    /* AccessibilityInfo.announceForAccessibility(
       "The Sorting Hat is deciding...",
-    );
-    const audioPlaybackPromise = playAudioClip(audioClip);
+    ); */
 
-    Animated.sequence([
-      Animated.parallel([
+    const audioPromise = playAudioClip(audioClip);
+
+    // Scale up + wobble rotation as hat "jumps out"
+    Animated.parallel([
+      Animated.spring(scale, {
+        toValue: BIG_HAT_SCALE,
+        useNativeDriver: true,
+        tension: 55,
+        friction: 7,
+      }),
+      Animated.sequence([
         Animated.timing(rotation, {
           toValue: 1,
-          duration: 220,
+          duration: 150,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-        Animated.timing(scale, {
-          toValue: 1.08,
-          duration: 220,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.parallel([
         Animated.timing(rotation, {
           toValue: -1,
-          duration: 220,
+          duration: 150,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-        Animated.timing(scale, {
-          toValue: 1,
-          duration: 220,
+        Animated.timing(rotation, {
+          toValue: 0,
+          duration: 100,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
       ]),
-      Animated.timing(rotation, {
-        toValue: 0,
-        duration: 160,
-        easing: Easing.inOut(Easing.ease),
+    ]).start();
+
+    // When audio finishes, spring back into the circle
+    audioPromise.then((played) => {
+      Animated.spring(scale, {
+        toValue: 1,
         useNativeDriver: true,
-      }),
-    ]).start(() => {
-      audioPlaybackPromise.then((played) => {
+        tension: 55,
+        friction: 7,
+      }).start(() => {
         setResult(audioClip.fallbackText);
-        if (!played) {
+        setIsPlaying(false);
+        /* if (!played) {
           AccessibilityInfo.announceForAccessibility(audioClip.fallbackText);
-        }
+        } */
       });
     });
   };
@@ -137,15 +151,23 @@ export default function App() {
         accessibilityLabel="Sort me into a Hogwarts house"
         accessibilityRole="button"
         onPress={onSortPress}
-        style={styles.button}
+        disabled={isPlaying}
+        style={[styles.button, isPlaying && styles.buttonActive]}
       >
         <Animated.View style={{ transform: [{ rotate: spin }, { scale }] }}>
-          <Text style={styles.hat}>🎩</Text>
+          <Image
+            source={isPlaying ? HAT_GIF : HAT_PNG}
+            style={styles.hatImage}
+          />
         </Animated.View>
       </Pressable>
       <View style={styles.captionWrapper}>
-        <Text style={styles.caption}>Tap the Sorting Hat</Text>
-        {result ? <Text style={styles.result}>{result}</Text> : null}
+        {!isPlaying && (
+          <Text style={styles.caption}>
+            Натисни на капелюх і дізнайся свій факультет
+          </Text>
+        )}
+        {/* {result ? <Text style={styles.result}>{result}</Text> : null} */}
       </View>
     </SafeAreaView>
   );
@@ -168,9 +190,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#2f2f47",
   },
-  hat: {
-    fontSize: 92,
+  buttonActive: {
+    zIndex: 10,
+    elevation: 10,
   },
+  hatImage: {
+    width: 140,
+    height: 140,
+    resizeMode: "contain",
+  },
+
   captionWrapper: {
     marginTop: 20,
     alignItems: "center",
@@ -180,6 +209,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 18,
     fontWeight: "600",
+    textAlign: "center",
   },
   result: {
     marginTop: 16,
